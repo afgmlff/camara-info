@@ -27,11 +27,11 @@ function App() {
     setPesquisa(e.target.value)
   }
 
-  function handleClick() {
+  function handleClick() {    //setId de acordo com o deputado pesquisado
     {dados.dados.filter(function (selecionado) {
-      return selecionado.nome === pesquisa
+      return selecionado.nome.includes(pesquisa)
     }).map((dado, i) =>
-      console.log(dado.id)
+      setId(dado.id)
     )}
     
   }
@@ -53,24 +53,9 @@ function App() {
         </>
       )}
 
-      {(typeof dados.dados === 'undefined') ? (
-        <></>
-      ): (
-        
-        dados.dados.filter((valor) =>{
-          if(pesquisa == ""){
-            return valor
-          } 
-          else if (valor.nome.toLowerCase().includes(pesquisa.toLowerCase())){
-            return valor
-          }
-        }).map((dado, i) => (          
-          <p key={i}>{dado.nome}</p>
-        ))
 
-      )}
-      <p>pesquisa: {pesquisa}</p>
-      <p>id: {id}</p>
+    <p>Deputado: {pesquisa}</p>
+    <p>Id: {id}</p>
     </div>
   )
 }
