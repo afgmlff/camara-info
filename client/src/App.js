@@ -27,7 +27,14 @@ function App() {
       {(typeof dados.dados === 'undefined') ? ( //Apresenta uma mensagem durante o período de tentativas de fetch na API, pro caso do servidor possuir muitas requisições...
         <p>Carregando...</p>
       ): (
-        <input type="text" placeholder='Insira o nome de um deputado' onChange={event =>{setPesquisa(event.target.value)}} />
+        <>
+        <input type="text" placeholder='Insira o nome de um deputado' onChange={event => { setPesquisa(event.target.value) } } list="data"/>
+        <datalist id="data">
+          {dados.dados.map((dado, i) =>
+              <option key={i} value={dado.nome} />
+          )}
+        </datalist>
+        </>
       )}
 
       {(typeof dados.dados === 'undefined') ? (
