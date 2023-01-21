@@ -2,8 +2,12 @@ import React, {useEffect, useState} from 'react'
 
 function App() {
 
-  const [pesquisa, setPesquisa] = useState("")
+  const [pesquisa, setPesquisa] = useState("")  //"pesquisa" será utilizada para receber o input do usuário e realizar uma próxima query para obter demais informações
+//sobre o deputado digitado em "pesquisa"
+
   const [dados, setDados] = useState([{}])
+
+  const [id, setId] = useState()
 
 
   /**
@@ -19,7 +23,18 @@ function App() {
     )
   }, [])
 
+  function getValue(e) {
+    setPesquisa(e.target.value)
+  }
 
+  function handleClick() {
+    {dados.dados.filter(function (selecionado) {
+      return selecionado.nome === pesquisa
+    }).map((dado, i) =>
+      console.log(dado.id)
+    )}
+    
+  }
 
   return (
     <div>
@@ -28,12 +43,13 @@ function App() {
         <p>Carregando...</p>
       ): (
         <>
-        <input type="text" placeholder='Insira o nome de um deputado' onChange={event => { setPesquisa(event.target.value) } } list="data"/>
+        <input type="text" placeholder='Insira o nome de um deputado' onChange={getValue} list="data"/>
         <datalist id="data">
           {dados.dados.map((dado, i) =>
               <option key={i} value={dado.nome} />
           )}
         </datalist>
+        <button onClick={handleClick}>Buscar</button>
         </>
       )}
 
@@ -53,9 +69,8 @@ function App() {
         ))
 
       )}
-
-    
-
+      <p>pesquisa: {pesquisa}</p>
+      <p>id: {id}</p>
     </div>
   )
 }
