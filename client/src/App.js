@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react'
+import axios from 'axios'
 
 function App() {
 
@@ -28,13 +29,41 @@ function App() {
   }
 
   function handleClick() {    //setId de acordo com o deputado pesquisado
-    {dados.dados.filter(function (selecionado) {
-      return selecionado.nome.includes(pesquisa)
-    }).map((dado, i) =>
-      setId(dado.id)
-    )}
-    
+    const selected = dados.dados.find(dado => dado.nome.includes(pesquisa))
+    setId(selected.id)
+    sendId()
   }
+
+
+
+  /**
+   * Enviando o ID pro backend, pra consultar a URL desejada da API pros casos
+   */
+  async function sendId() {
+    let retryCount = 0;
+    while (retryCount <= 3) {
+        try {
+          
+            const response = await axios.post('/data/post', { id });
+            console.log(response);
+            break;
+        } catch (error) {
+            if (error.response && error.response.status === 429) {
+                retryCount++;
+                let retryAfter = error.response.headers['Retry-After']; //retrive the retry-after header value
+                console.log(`Rate limit reached, retrying after ${retryAfter} seconds`);
+                await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
+            } else {
+                console.log(error);
+                break;
+            }
+        }
+    }
+    if (retryCount > 3) {
+        console.log("Too many retries, giving up.");
+    }
+}
+
 
   return (
     <div>
