@@ -1,5 +1,6 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useRef} from 'react'
 import axios from 'axios'
+import './App.css'
 
 function App() {
 
@@ -11,6 +12,25 @@ function App() {
   const [id, setId] = useState()
 
   const[ocupacoes, setOcupacoes] = useState([{}])
+
+  /**
+   * Limpar o input box se o usuário clicar fora dele
+   */
+
+  const inputRef = useRef(null);
+  const handleClickOutside = e => {
+    if (inputRef.current && !inputRef.current.contains(e.target)) {
+      inputRef.current.value = '';
+      setPesquisa(null)
+    }
+  };
+  
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  });
 
   /**
    * Fetch para o backend, onde são requisitados os dados da API da câmara
@@ -41,6 +61,10 @@ function App() {
   const retryInterval = 3000;
 
   function handleClick() {
+    if(pesquisa == null){
+      alert('selecione um deputado na lista')
+      return -1
+    }
     const selected = dados.dados.find(dado => dado.nome.includes(pesquisa))
     console.log(selected)
     const id = selected.id;
@@ -103,26 +127,29 @@ function App() {
 
 
   return (
-    <div>
+    <div className='content'>
       
-      {(typeof dados.dados === 'undefined') ? ( //Apresenta uma mensagem durante o período de tentativas de fetch na API, pro caso do servidor possuir muitas requisições...
-        <p>Carregando...</p>
-      ): (
-        <>
-        <input type="text" placeholder='Insira o nome de um deputado' onChange={getValue} list="data"/>
-        <datalist id="data">
-          {dados.dados.map((dado, i) =>
-              <option key={i} value={dado.nome} />
+      <div className='consulta'>
+          {(typeof dados.dados === 'undefined') ? ( //Apresenta uma mensagem durante o período de tentativas de fetch na API, pro caso do servidor possuir muitas requisições...
+            <p>Carregando...</p>
+          ): (
+            <>
+            <input ref={inputRef} className='searchBar' type="text" placeholder='Insira o nome de um deputado' onChange={getValue} list="data"/>
+            <datalist id="data">
+              {dados.dados.map((dado, i) =>
+                  <option key={i} value={dado.nome} />
+              )}
+            </datalist>
+            <button className='searchButton' onClick={handleClick}>Buscar</button>
+            </>
           )}
-        </datalist>
-        <button onClick={handleClick}>Buscar</button>
-        </>
-      )}
+      </div>
 
-
+    <div className='resultadoConsulta'>           
     <p>Deputado: {pesquisa}</p>
+    </div>
     
-
+    <div className='resultadoConsulta'>
     {(typeof ocupacoes.dados === 'undefined') ? ( //Apresenta uma mensagem durante o período de tentativas de fetch na API, pro caso do servidor possuir muitas requisições...
         <p>Carregando...</p>
       ): (
@@ -132,7 +159,8 @@ function App() {
         )}
         </>
       )}
-
+    </div>
+    
 
 
     
