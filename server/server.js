@@ -14,16 +14,21 @@ app.get('/data', (req, res) => {
     });
 });
 
-app.post('/data/post', (req, res) => {
+app.post('/sendId', (req, res) => {
     const id = req.body.id
-    axios.get(`https://dadosabertos.camara.leg.br/api/v2/deputados/${id}/ocupacoes`)
-    .then(response => {
-        res.json(response.data)
-        console.log(id)
-    })
-    .catch(error => {
-        console.log(error)
-    });
+    if(id) {
+        axios.get(`https://dadosabertos.camara.leg.br/api/v2/deputados/${id}/ocupacoes`)
+        .then(response => {
+            res.json(response.data);
+            console.log(response.data)
+        })
+        .catch(error => {
+            console.log(error);
+            res.status(500).send(error);
+        });
+    } else {
+        res.status(400).send("Missing id parameter");
+    }
 });
 
 app.listen(5000, ()=> {console.log("Servidor rodando na porta 5000...")})

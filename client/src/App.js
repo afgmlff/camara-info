@@ -10,6 +10,7 @@ function App() {
 
   const [id, setId] = useState()
 
+  const[ocupacoes, setOcupacoes] = useState([{}])
 
   /**
    * Fetch para o backend, onde são requisitados os dados da API da câmara
@@ -28,11 +29,48 @@ function App() {
     setPesquisa(e.target.value)
   }
 
-  function handleClick() {    //setId de acordo com o deputado pesquisado
+
+  useEffect(() => {
+    if(id) {
+      console.log(id)
+      sendId();
+    }
+  }, [id])
+
+
+  const retryInterval = 3000;
+
+  function handleClick() {
     const selected = dados.dados.find(dado => dado.nome.includes(pesquisa))
-    setId(selected.id)
-    sendId()
-  }
+    console.log(selected)
+    const id = selected.id;
+
+    function sendId() {
+        fetch('/sendId', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: id })
+        })
+        .then(response => {
+            if (response.status === 429) {
+                setTimeout(sendId, retryInterval);
+            } else {
+                return response.json();
+            }
+        })
+        .then(data => {
+            console.log(data)
+            setOcupacoes(data)
+            console.log("tipo ocup: " + typeof ocupacoes)
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+    sendId();
+}
 
 
 
@@ -84,7 +122,10 @@ function App() {
 
 
     <p>Deputado: {pesquisa}</p>
-    <p>Id: {id}</p>
+    <p>Ocupações: {ocupacoes.dados[0].titulo}</p>
+    {ocupacoes.dados.map((ocupacao, i) => 
+      <p>{ocupacao.titulo}</p>
+    )}
     </div>
   )
 }
