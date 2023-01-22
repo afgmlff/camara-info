@@ -1,21 +1,27 @@
 import React, {useEffect, useState, useRef} from 'react'
 import axios from 'axios'
 import './App.css'
+import Header from './Header';
+import Pagina2 from './Pagina2';
+
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom' 
 
 function App() {
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); //constante p/ verificar a necessidade da animação de loading
+
+  const [title, setTitle] = useState("")//constante p/ setar o Título da tabela que apresenta as ocupações (e, possívelmente, demais tabelas informacionais)
 
   const [pesquisa, setPesquisa] = useState("")  //"pesquisa" será utilizada para receber o input do usuário e realizar uma próxima query para obter demais informações
 //sobre o deputado digitado em "pesquisa"
 
-  const [deputado, setDeputado] = useState("")
+  const [deputado, setDeputado] = useState("") //constante com o nome do deputado da pesquisa atual
 
-  const [dados, setDados] = useState([{}])
+  const [dados, setDados] = useState([{}]) //json da consulta inicial de deputados por nome
 
-  const [id, setId] = useState()
+  const [id, setId] = useState()//id do deputado
 
-  const[ocupacoes, setOcupacoes] = useState([{}])
+  const[ocupacoes, setOcupacoes] = useState([{}])//json da consulta de ocupações
 
   /**
    * Limpar o input box se o usuário clicar fora dele
@@ -73,6 +79,7 @@ function App() {
     }
 
     setIsLoading(true)
+    setTitle(deputado)
     
     const selected = dados.dados.find(dado => dado.nome.includes(pesquisa))
     console.log(selected)
@@ -138,63 +145,74 @@ function App() {
 
 
   return (
-    <div className='content'>
+    <>
+    <Router>
+      <Header />
       
-      <div className='consulta'>
+    <div className='content'>
+    <Switch>
+    <Route exact path="/">
+        <div className='consulta'>
           {(typeof dados.dados === 'undefined') ? ( //Apresenta uma mensagem durante o período de tentativas de fetch na API, pro caso do servidor possuir muitas requisições...
-            <p>Carregando...</p>
-          ): (
+
+            <img className="loadingInitial" src='/Rolling-1s-200px.gif' />
+          ) : (
             <>
-            <input ref={inputRef} className='searchBar' type="text" placeholder='Insira o nome de um deputado' onChange={getValue} list="data"/>
-            <datalist id="data">
-              {dados.dados.map((dado, i) =>
-                  <option key={i} value={dado.nome} />
-              )}
-            </datalist>
-            <button className='searchButton' onClick={handleClick}>Buscar</button>
+              <input ref={inputRef} className='searchBar' type="text" placeholder='Insira o nome de um deputado' onChange={getValue} list="data" />
+              <datalist id="data">
+                {dados.dados.map((dado, i) => <option key={i} value={dado.nome} />
+                )}
+              </datalist>
+              <button className='searchButton' onClick={handleClick}>Buscar</button>
             </>
           )}
-      </div>
+        </div>
 
-      <div>
-      {isLoading ? <p className='centeredBlock'>Loading...</p> : <></>}
-    </div>
-    
-    <div className='resultadoConsulta'>
-    {(typeof ocupacoes.dados === 'undefined') ? ( //Apresenta uma mensagem durante o período de tentativas de fetch na API, pro caso do servidor possuir muitas requisições...
-        <></>
-      ): (
-        <>
-          <div className='tableWrapper'>
-            <table className='tableStyle'>
-            <thead>
-            <tr>
-              <th>Entidade</th>
-              <th>Título</th>
-              <th>Ano de Início</th>
-              <th>Ano de Fim</th>
-            </tr>
-            </thead>
-            {ocupacoes.dados.map((ocupacao, i) => 
-              <tr>
-              <td valign="top">{ocupacao.entidade}</td>
-              <td valign="top">{ocupacao.titulo}</td>
-              <td valign="top">{ocupacao.anoInicio}</td>
-              <td valign="top">{ocupacao.anoFim}</td>
-              </tr>
-            )}
+        <div>
+          {isLoading ? <img className="loadingNewQ" src='/Rolling-1s-200px.gif' /> : <></>}
+        </div>
 
-            </table>
+        <div className='resultadoConsulta'>
+          {(typeof ocupacoes.dados === 'undefined' || isLoading) ? ( //Apresenta uma mensagem durante o período de tentativas de fetch na API, pro caso do servidor possuir muitas requisições...
+            <></>
+          ) : (
+            <>
+              <div className='tableWrapper'>
+                <h3>{title} - Ocupações</h3>
+                <table className='tableStyle'>
+                  <thead>
+                    <tr>
+                      <th>Entidade</th>
+                      <th>Título</th>
+                      <th>Ano de Início</th>
+                      <th>Ano de Fim</th>
+                    </tr>
+                  </thead>
+                  {ocupacoes.dados.map((ocupacao, i) => <tr>
+                    <td valign="top">{ocupacao.entidade}</td>
+                    <td valign="top">{ocupacao.titulo}</td>
+                    <td valign="top">{ocupacao.anoInicio}</td>
+                    <td valign="top">{ocupacao.anoFim}</td>
+                  </tr>
+                  )}
 
-          </div>
-        </>
-      )}
-    </div>
-    
+                </table>
+
+              </div>
+            </>
+          )}
+        </div>
+        </Route>
+        
+            <Route path="/pagina2">
+                <Pagina2 />
+            </Route>  
+        </Switch>            
 
 
-    
-    </div>
+      </div></Router>
+      
+      </>
   )
 }
 

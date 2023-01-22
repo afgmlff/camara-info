@@ -4,6 +4,18 @@ td{
     max-width: 500px;
 }
 
+.loadingInitial{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loadingNewQ{
+    display: flex;
+    justify-content: center;
+    left: 50%;
+    transform: scale(0.5);
+}
 
 .tableWrapper{
     margin: 10px 70px 70px;
