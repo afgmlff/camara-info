@@ -45,30 +45,29 @@ function App() {
     console.log(selected)
     const id = selected.id;
 
-    function sendId() {
-        fetch('/sendId', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ id: id })
-        })
-        .then(response => {
-            if (response.status === 429) {
-                setTimeout(sendId, retryInterval);
-            } else {
-                return response.json();
-            }
-        })
-        .then(data => {
-            console.log(data)
-            setOcupacoes(data)
-            console.log("tipo ocup: " + typeof ocupacoes)
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    }
+    async function sendId() {
+      let retryCount = 0;
+      while (retryCount <= 3) {
+          try {
+              const response = await axios.post('/sendId', { id });
+              if (response.status === 500) {
+                  retryCount++;
+                  console.log(`Erro 500. Tentando conectar novamente...`);
+                  await new Promise(resolve => setTimeout(resolve, retryInterval));
+              } else {
+                  setOcupacoes(response.data);
+                  break;
+              }
+          } catch (error) {
+              console.log(error);
+              break;
+          }
+      }
+      if (retryCount > 3) {
+          console.log("Limite de tentativas excedido.");
+      }
+  }
+
     sendId();
 }
 
@@ -88,8 +87,8 @@ function App() {
         } catch (error) {
             if (error.response && error.response.status === 429) {
                 retryCount++;
-                let retryAfter = error.response.headers['Retry-After']; //retrive the retry-after header value
-                console.log(`Rate limit reached, retrying after ${retryAfter} seconds`);
+                let retryAfter = error.response.headers['Retry-After'];
+                console.log('Limite excedido. Tentando novamente...');
                 await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
             } else {
                 console.log(error);
@@ -98,7 +97,7 @@ function App() {
         }
     }
     if (retryCount > 3) {
-        console.log("Too many retries, giving up.");
+        console.log("Limite de tentativas excedido.");
     }
 }
 
@@ -122,10 +121,21 @@ function App() {
 
 
     <p>Deputado: {pesquisa}</p>
-    <p>Ocupações: {ocupacoes.dados[0].titulo}</p>
-    {ocupacoes.dados.map((ocupacao, i) => 
-      <p>{ocupacao.titulo}</p>
-    )}
+    
+
+    {(typeof ocupacoes.dados === 'undefined') ? ( //Apresenta uma mensagem durante o período de tentativas de fetch na API, pro caso do servidor possuir muitas requisições...
+        <p>Carregando...</p>
+      ): (
+        <>
+        {ocupacoes.dados.map((ocupacao, i) => 
+          <p>{ocupacao.titulo}</p>
+        )}
+        </>
+      )}
+
+
+
+    
     </div>
   )
 }
