@@ -9,6 +9,18 @@
     justify-content: center;
 }
 
+.centeredBlock{
+    display: block;
+    margin: auto;
+    text-align: center;
+}
+
+.ocupacaoItem{
+    display: block;
+    margin: auto;
+    text-align: center;
+}
+
 .searchBar{
     width: 350px;
     border: 3px solid #00B4CC;
@@ -33,6 +45,6 @@
 }
 
 .resultadoConsulta{
-    display: flex;
+    display: block;
     justify-content: center;
 }

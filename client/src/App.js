@@ -4,8 +4,14 @@ import './App.css'
 
 function App() {
 
+  const [isLoading, setIsLoading] = useState(true);
+
   const [pesquisa, setPesquisa] = useState("")  //"pesquisa" será utilizada para receber o input do usuário e realizar uma próxima query para obter demais informações
 //sobre o deputado digitado em "pesquisa"
+
+  const [ultimaPesquisa, setUltimaPesquisa] = useState("")
+
+  const [deputado, setDeputado] = useState("")
 
   const [dados, setDados] = useState([{}])
 
@@ -47,6 +53,7 @@ function App() {
 
   function getValue(e) {
     setPesquisa(e.target.value)
+    setDeputado(e.target.value)
   }
 
 
@@ -61,6 +68,7 @@ function App() {
   const retryInterval = 3000;
 
   function handleClick() {
+    setIsLoading(true)
     if(pesquisa == null){
       alert('selecione um deputado na lista')
       return -1
@@ -76,19 +84,21 @@ function App() {
               const response = await axios.post('/sendId', { id });
               if (response.status === 500) {
                   retryCount++;
-                  console.log(`Erro 500. Tentando conectar novamente...`);
-                  await new Promise(resolve => setTimeout(resolve, retryInterval));
+                  console.log(`Erro 500. Tentando conectar novamente...`)
+                  await new Promise(resolve => setTimeout(resolve, retryInterval))
               } else {
-                  setOcupacoes(response.data);
-                  break;
+                  setOcupacoes(response.data)
+                  setIsLoading(false)
+                  break
               }
           } catch (error) {
-              console.log(error);
-              break;
+              console.log(error)
+              setIsLoading(false)
+              break
           }
       }
       if (retryCount > 3) {
-          console.log("Limite de tentativas excedido.");
+          console.log("Limite de tentativas excedido.")
       }
   }
 
@@ -145,17 +155,17 @@ function App() {
           )}
       </div>
 
-    <div className='resultadoConsulta'>           
-    <p>Deputado: {pesquisa}</p>
+      <div>
+      {isLoading ? <p>Loading...</p> : <></>}
     </div>
     
     <div className='resultadoConsulta'>
     {(typeof ocupacoes.dados === 'undefined') ? ( //Apresenta uma mensagem durante o período de tentativas de fetch na API, pro caso do servidor possuir muitas requisições...
-        <p>Carregando...</p>
+        <p className='centeredBlock'>Carregando informações sobre {deputado}</p>
       ): (
         <>
         {ocupacoes.dados.map((ocupacao, i) => 
-          <p>{ocupacao.titulo}</p>
+          <div className='ocupacaoItem'>{ocupacao.titulo}</div>
         )}
         </>
       )}
