@@ -4,12 +4,10 @@ import './App.css'
 
 function App() {
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [pesquisa, setPesquisa] = useState("")  //"pesquisa" será utilizada para receber o input do usuário e realizar uma próxima query para obter demais informações
 //sobre o deputado digitado em "pesquisa"
-
-  const [ultimaPesquisa, setUltimaPesquisa] = useState("")
 
   const [deputado, setDeputado] = useState("")
 
@@ -68,11 +66,14 @@ function App() {
   const retryInterval = 3000;
 
   function handleClick() {
-    setIsLoading(true)
+    
     if(pesquisa == null){
       alert('selecione um deputado na lista')
       return -1
     }
+
+    setIsLoading(true)
+    
     const selected = dados.dados.find(dado => dado.nome.includes(pesquisa))
     console.log(selected)
     const id = selected.id;
@@ -156,17 +157,27 @@ function App() {
       </div>
 
       <div>
-      {isLoading ? <p>Loading...</p> : <></>}
+      {isLoading ? <p className='centeredBlock'>Loading...</p> : <></>}
     </div>
     
     <div className='resultadoConsulta'>
     {(typeof ocupacoes.dados === 'undefined') ? ( //Apresenta uma mensagem durante o período de tentativas de fetch na API, pro caso do servidor possuir muitas requisições...
-        <p className='centeredBlock'>Carregando informações sobre {deputado}</p>
+        <></>
       ): (
         <>
+        <table className='center'>
+        <tr>
+          <th>Entidade</th>
+          <th>Título</th>
+        </tr>
         {ocupacoes.dados.map((ocupacao, i) => 
-          <div className='ocupacaoItem'>{ocupacao.titulo}</div>
+          <tr>
+          <td>Entidade: {ocupacao.entidade}</td>
+          <td>Título: {ocupacao.titulo}</td>
+          </tr>
         )}
+
+        </table>
         </>
       )}
     </div>
