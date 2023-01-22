@@ -165,19 +165,28 @@ function App() {
         <></>
       ): (
         <>
-        <table className='center'>
-        <tr>
-          <th>Entidade</th>
-          <th>Título</th>
-        </tr>
-        {ocupacoes.dados.map((ocupacao, i) => 
-          <tr>
-          <td>Entidade: {ocupacao.entidade}</td>
-          <td>Título: {ocupacao.titulo}</td>
-          </tr>
-        )}
+          <div className='tableWrapper'>
+            <table className='tableStyle'>
+            <thead>
+            <tr>
+              <th>Entidade</th>
+              <th>Título</th>
+              <th>Ano de Início</th>
+              <th>Ano de Fim</th>
+            </tr>
+            </thead>
+            {ocupacoes.dados.map((ocupacao, i) => 
+              <tr>
+              <td valign="top">{ocupacao.entidade}</td>
+              <td valign="top">{ocupacao.titulo}</td>
+              <td valign="top">{ocupacao.anoInicio}</td>
+              <td valign="top">{ocupacao.anoFim}</td>
+              </tr>
+            )}
 
-        </table>
+            </table>
+
+          </div>
         </>
       )}
     </div>
