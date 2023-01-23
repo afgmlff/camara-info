@@ -1,14 +1,11 @@
 import React, {useEffect, useState, useRef} from 'react'
 import axios from 'axios'
 import './App.css'
-import Header from './Header';
-import Pagina2 from './Pagina2';
-import Pagina3 from './Pagina3';
 import './Pagina2.css'
+import './Pagina3.css'
 
-import {BrowserRouter as Router, Route, Switch, Link} from 'react-router-dom' 
 
-function App() {
+function Pagina3() {
 
   const [isLoading, setIsLoading] = useState(false); //constante p/ verificar a necessidade da animação de loading
 
@@ -48,7 +45,7 @@ function App() {
    * Fetch para o backend, onde são requisitados os dados da API da câmara
    */
   useEffect(() => {
-    fetch("/data").then(
+    fetch("/uflist").then(
       response => response.json()
     ).then(
       data => {
@@ -69,7 +66,7 @@ function App() {
   function handleClick() {
     
     if(pesquisa == null){
-      alert('selecione um deputado na lista')
+      alert('selecione um estado na lista')
       return -1
     }
 
@@ -78,14 +75,14 @@ function App() {
     
     const selected = dados.dados.find(dado => dado.nome.includes(pesquisa))
     console.log(selected)
-    const id = selected.id
+    const id = selected.sigla
 
     async function sendId() {
       let retryCount = 0
       while (retryCount <= 3) {
         
           try {
-              const response = await axios.post('/sendId', { id })
+              const response = await axios.post('/ufsearch', { id })
               if (response.status === 500) {
                   retryCount++;
                   console.log(`Erro 500. Tentando conectar novamente...`)
@@ -103,7 +100,7 @@ function App() {
           }
       }
       if (retryCount > 3) {
-          console.log("Limite de tentativas excedido.")
+          retryCount = 0
       }
   }
 
@@ -116,21 +113,19 @@ function App() {
 
   return (
     <>
-    <Router>
-      <Header />
+
       
     <div className='content'>
-    <Switch>
-    <Route exact path="/pagina2">
-    <p className='subtitulo'>Carreira e ocupações</p>
-        <p className='texto'>Selecione um deputado na busca abaixo para exibir informações acerca de sua carreira e ocupações.</p>
+
+    <p className='subtitulo'>Unidades Federativas</p>
+        <p className='texto'>Selecione uma Unidade Federativa para exibir informações acerca dos deputados nela presentes.</p>
         <div className='consulta'>
           {(typeof dados.dados === 'undefined') ? ( //Apresenta uma mensagem durante o período de tentativas de fetch na API, pro caso do servidor possuir muitas requisições...
 
             <img className="loadingInitial" src='/Rolling-1s-200px.gif' />
           ) : (
             <>
-              <input ref={inputRef} className='searchBar' type="text" placeholder='Insira o nome de um deputado' onChange={getValue} list="data" />
+              <input ref={inputRef} className='searchBar' type="text" placeholder='Insira uma UF' onChange={getValue} list="data" />
               <datalist id="data">
                 {dados.dados.map((dado, i) => <option key={i} value={dado.nome} />
                 )}
@@ -154,17 +149,13 @@ function App() {
                 <table className='tableStyle'>
                   <thead>
                     <tr>
-                      <th>Entidade</th>
-                      <th>Título</th>
-                      <th>Ano de Início</th>
-                      <th>Ano de Fim</th>
+                      <th>Nome</th>
+                      <th>Partido</th>
                     </tr>
                   </thead>
                   {ocupacoes.dados.map((ocupacao, i) => <tr>
-                    <td valign="top">{ocupacao.entidade}</td>
-                    <td valign="top">{ocupacao.titulo}</td>
-                    <td valign="top">{ocupacao.anoInicio}</td>
-                    <td valign="top">{ocupacao.anoFim}</td>
+                    <td valign="top">{ocupacao.nome}</td>
+                    <td valign="top">{ocupacao.siglaPartido}</td>
                   </tr>
                   )}
                 </table>
@@ -172,22 +163,14 @@ function App() {
             </>
           )}
         </div>
-        </Route>
+
         
-          <Route exact path="/">
-              <Pagina2 />
-          </Route>
-
-          <Route path="/pagina3">
-              <Pagina3 />
-          </Route>
-        </Switch>            
 
 
-      </div></Router>
-      
+
+      </div>
       </>
   )
 }
 
-export default App
+export default Pagina3
