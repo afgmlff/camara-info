@@ -1,5 +1,6 @@
 import React from 'react';
 import './Header.css'
+import {Link} from 'react-router-dom' 
 
 function Header() {
 
@@ -10,8 +11,8 @@ function Header() {
         <h1>Caso Técnico | Desenvolvedor</h1>
         <div className='menu'>
           <ul>
-            <li className=''>Informações Gerais</li>
-            <li className=''>Ocupações</li>
+            <li className=''><Link to="/">Informações Gerais</Link></li>
+            <li className=''><Link to="/pagina2">Ocupações</Link></li>
           </ul>
         </div>
     </header>

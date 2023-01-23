@@ -1,4 +1,3 @@
-
 import './Pagina2.css'
 import App from './App';
 
