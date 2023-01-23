@@ -44,8 +44,12 @@ function App() {
     };
   });
 
+
+
+
+
   /**
-   * Fetch para o backend, onde são requisitados os dados da API da câmara
+   * Fetch para o backend, onde requisita-se a lista de deputados da API da câmara
    */
   useEffect(() => {
     fetch("/data").then(
@@ -66,33 +70,37 @@ function App() {
 
   const retryInterval = 3000;
 
+
+  /**
+   * Função p/ utilizar o ID do deputado selecionado, no momento do clique em "buscar", para recuperar as demais informações em https://dadosabertos.camara.leg.br/api/v2/deputados/${id}/ocupacoes
+   */
   function handleClick() {
     
-    if(pesquisa == null){
+    if(pesquisa == null){       //alerta pro caso da tentativa de envio de uma caixa vazia
       alert('selecione um deputado na lista')
       return -1
     }
 
-    setIsLoading(true)
-    setTitle(deputado)
+    setIsLoading(true)        //exibe o loading gif enquanto não obtem-se resposta
+    setTitle(deputado)        //seta o título que será utilizado na tabela, de acordo com o deputado inserido na caixa
     
-    const selected = dados.dados.find(dado => dado.nome.includes(pesquisa))
+    const selected = dados.dados.find(dado => dado.nome.includes(pesquisa))   //procura, na lista, o deputado com o mesmo nome inserido na caixa de pesquisa
     console.log(selected)
-    const id = selected.id
+    const id = selected.id      //resgata o ID do deputado para utilizar na URL de ocupações
 
     async function sendId() {
       let retryCount = 0
-      while (retryCount <= 3) {
+      while (retryCount <= 3) {     //Retry por conta da instabilidade no momento dos testes realizados
         
           try {
-              const response = await axios.post('/sendId', { id })
+              const response = await axios.post('/sendId', { id })    //depois de várias tentativas, foi necessário utilizar async/await 
               if (response.status === 500) {
                   retryCount++;
                   console.log(`Erro 500. Tentando conectar novamente...`)
-                  await new Promise(resolve => setTimeout(resolve, retryInterval))
+                  await new Promise(resolve => setTimeout(resolve, retryInterval))  //intervalo de 3s
               } else {
-                  setOcupacoes(response.data)
-                  setIsLoading(false)
+                  setOcupacoes(response.data)     //seta o array de objetos JSON com a resposta do backend
+                  setIsLoading(false)         //remove o loading gif
                   break
               }
           } catch (error) {
