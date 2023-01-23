@@ -4,7 +4,7 @@ import './App.css'
 import Header from './Header';
 import Pagina2 from './Pagina2';
 
-import {BrowserRouter as Router, Route, Switch} from 'react-router-dom' 
+import {BrowserRouter as Router, Route, Switch, Link} from 'react-router-dom' 
 
 function App() {
 
@@ -61,13 +61,6 @@ function App() {
   }
 
 
-  useEffect(() => {
-    if(id) {
-      console.log(id)
-      sendId();
-    }
-  }, [id])
-
 
   const retryInterval = 3000;
 
@@ -88,6 +81,7 @@ function App() {
     async function sendId() {
       let retryCount = 0;
       while (retryCount <= 3) {
+        
           try {
               const response = await axios.post('/sendId', { id });
               if (response.status === 500) {
@@ -101,8 +95,9 @@ function App() {
               }
           } catch (error) {
               console.log(error)
-              setIsLoading(false)
-              break
+              retryCount++;
+              await new Promise(resolve => setTimeout(resolve, retryInterval));
+              
           }
       }
       if (retryCount > 3) {
@@ -115,33 +110,6 @@ function App() {
 
 
 
-  /**
-   * Enviando o ID pro backend, pra consultar a URL desejada da API pros casos
-   */
-  async function sendId() {
-    let retryCount = 0;
-    while (retryCount <= 3) {
-        try {
-          
-            const response = await axios.post('/data/post', { id });
-            console.log(response);
-            break;
-        } catch (error) {
-            if (error.response && error.response.status === 429) {
-                retryCount++;
-                let retryAfter = error.response.headers['Retry-After'];
-                console.log('Limite excedido. Tentando novamente...');
-                await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
-            } else {
-                console.log(error);
-                break;
-            }
-        }
-    }
-    if (retryCount > 3) {
-        console.log("Limite de tentativas excedido.");
-    }
-}
 
 
   return (
@@ -195,18 +163,16 @@ function App() {
                     <td valign="top">{ocupacao.anoFim}</td>
                   </tr>
                   )}
-
                 </table>
-
               </div>
             </>
           )}
         </div>
         </Route>
         
-            <Route path="/pagina2">
-                <Pagina2 />
-            </Route>  
+          <Route path="/pagina2">
+              <Pagina2 />
+          </Route>
         </Switch>            
 
 
