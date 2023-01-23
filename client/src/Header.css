@@ -32,3 +32,26 @@ h1{
         font-style: italic;
 }
 
+@media (max-width: 1110px) {
+    h1{
+        bottom: 23%;
+    }
+}
+
+li{
+    list-style-type: none;
+    padding-left: 4vw;
+}
+
+ul > li {
+    display: inline-block;
+}
+
+.menu{
+    position: absolute;
+    bottom: 8%;
+    right: 10%;
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+    color: #ffffff;
+}

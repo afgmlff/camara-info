@@ -3,6 +3,7 @@ import axios from 'axios'
 import './App.css'
 import Header from './Header';
 import Pagina2 from './Pagina2';
+import './Pagina2.css'
 
 import {BrowserRouter as Router, Route, Switch, Link} from 'react-router-dom' 
 
@@ -119,7 +120,9 @@ function App() {
       
     <div className='content'>
     <Switch>
-    <Route exact path="/">
+    <Route exact path="/pagina2">
+    <p className='subtitulo'>Carreira e ocupações</p>
+        <p className='texto'>Selecione um deputado na busca abaixo para exibir informações acerca de sua carreira e ocupações.</p>
         <div className='consulta'>
           {(typeof dados.dados === 'undefined') ? ( //Apresenta uma mensagem durante o período de tentativas de fetch na API, pro caso do servidor possuir muitas requisições...
 
@@ -146,7 +149,7 @@ function App() {
           ) : (
             <>
               <div className='tableWrapper'>
-                <h3>{title} - Ocupações</h3>
+                <h3>{title}</h3>
                 <table className='tableStyle'>
                   <thead>
                     <tr>
@@ -170,7 +173,7 @@ function App() {
         </div>
         </Route>
         
-          <Route path="/pagina2">
+          <Route path="/">
               <Pagina2 />
           </Route>
         </Switch>            

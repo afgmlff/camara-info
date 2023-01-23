@@ -83,9 +83,36 @@ function Pagina2() {
     const selected = dados.dados.find(dado => dado.nome.includes(pesquisa))
     console.log(selected)
     const id = selected.id;
-    setGeneric(selected)
-    setIsLoading(false)
 
+    async function sendId() {
+      let retryCount = 0
+      while (retryCount <= 3) {
+        
+          try {
+              const response = await axios.post('/geral', { id })
+              if (response.status === 500) {
+                  retryCount++;
+                  console.log(`Erro 500. Tentando conectar novamente...`)
+                  await new Promise(resolve => setTimeout(resolve, retryInterval))
+              } else {
+                  setGeneric(response.data)
+                  setIsLoading(false)
+                  break
+              }
+          } catch (error) {
+              console.log(error)
+              retryCount++
+              await new Promise(resolve => setTimeout(resolve, retryInterval))
+              
+          }
+      }
+      if (retryCount > 3) {
+          console.log("Limite de tentativas excedido.")
+      }
+  }
+
+    sendId()
+    console.log(generic)
 
 }
 
@@ -93,7 +120,7 @@ function Pagina2() {
   return (
     <>
         <p className='subtitulo'>Informações gerais</p>
-        <p className='texto'>Selecione um deputado na busca acima para exibir informações.</p>
+        <p className='texto'>Selecione um deputado na busca abaixo para exibir suas informações.</p>
 
         <div className='consulta'>
         {(typeof dados.dados === 'undefined') ? ( //Apresenta uma mensagem durante o período de tentativas de fetch na API, pro caso do servidor possuir muitas requisições...
@@ -128,12 +155,16 @@ function Pagina2() {
                     <th>Nome</th>
                     <th>Partido</th>
                     <th>Estado</th>
+                    <th>Condição Eleitoral</th>
+                    <th>Situação</th>
                   </tr>
                 </thead>
                 <tr>
-                  <td valign="top">{generic.nome}</td>
-                  <td valign="top">{generic.siglaPartido}</td>
-                  <td valign="top">{generic.siglaUf}</td>
+                  <td valign="top">{generic.dados.ultimoStatus.nome}</td>
+                  <td valign="top">{generic.dados.ultimoStatus.siglaPartido}</td>
+                  <td valign="top">{generic.dados.ultimoStatus.siglaUf}</td>
+                  <td valign="top">{generic.dados.ultimoStatus.condicaoEleitoral}</td>
+                  <td valign="top">{generic.dados.ultimoStatus.situacao}</td>
                 </tr>
                 
               </table>
