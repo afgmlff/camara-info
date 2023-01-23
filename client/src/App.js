@@ -76,14 +76,14 @@ function App() {
     
     const selected = dados.dados.find(dado => dado.nome.includes(pesquisa))
     console.log(selected)
-    const id = selected.id;
+    const id = selected.id
 
     async function sendId() {
-      let retryCount = 0;
+      let retryCount = 0
       while (retryCount <= 3) {
         
           try {
-              const response = await axios.post('/sendId', { id });
+              const response = await axios.post('/sendId', { id })
               if (response.status === 500) {
                   retryCount++;
                   console.log(`Erro 500. Tentando conectar novamente...`)
@@ -95,8 +95,8 @@ function App() {
               }
           } catch (error) {
               console.log(error)
-              retryCount++;
-              await new Promise(resolve => setTimeout(resolve, retryInterval));
+              retryCount++
+              await new Promise(resolve => setTimeout(resolve, retryInterval))
               
           }
       }
@@ -105,7 +105,7 @@ function App() {
       }
   }
 
-    sendId();
+    sendId()
 }
 
 

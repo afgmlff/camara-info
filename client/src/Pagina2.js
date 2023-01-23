@@ -24,7 +24,9 @@ function Pagina2() {
 
   const [id, setId] = useState()//id do deputado
 
-  const[ocupacoes, setOcupacoes] = useState([{}])//json da consulta de ocupações
+  const [ocupacoes, setOcupacoes] = useState([{}])//json da consulta de ocupações
+
+  const [generic, setGeneric] = useState([{}])
 
   /**
    * Limpar o input box se o usuário clicar fora dele
@@ -81,35 +83,10 @@ function Pagina2() {
     const selected = dados.dados.find(dado => dado.nome.includes(pesquisa))
     console.log(selected)
     const id = selected.id;
+    setGeneric(selected)
+    setIsLoading(false)
 
-    async function sendId() {
-      let retryCount = 0;
-      while (retryCount <= 3) {
-        
-          try {
-              const response = await axios.post('/sendId', { id });
-              if (response.status === 500) {
-                  retryCount++;
-                  console.log(`Erro 500. Tentando conectar novamente...`)
-                  await new Promise(resolve => setTimeout(resolve, retryInterval))
-              } else {
-                  setOcupacoes(response.data)
-                  setIsLoading(false)
-                  break
-              }
-          } catch (error) {
-              console.log(error)
-              retryCount++;
-              await new Promise(resolve => setTimeout(resolve, retryInterval));
-              
-          }
-      }
-      if (retryCount > 3) {
-          console.log("Limite de tentativas excedido.")
-      }
-  }
 
-    sendId();
 }
 
 
@@ -139,28 +116,26 @@ function Pagina2() {
       </div>
 
       <div className='resultadoConsulta'>
-        {(typeof ocupacoes.dados === 'undefined' || isLoading) ? ( //Apresenta uma mensagem durante o período de tentativas de fetch na API, pro caso do servidor possuir muitas requisições...
+        {(typeof generic.dados === 'undefined' || isLoading) ? ( //Apresenta uma mensagem durante o período de tentativas de fetch na API, pro caso do servidor possuir muitas requisições...
           <></>
         ) : (
           <>
             <div className='tableWrapper'>
-              <h3>{title} - Ocupações</h3>
+              <h3>{title}</h3>
               <table className='tableStyle'>
                 <thead>
                   <tr>
-                    <th>Entidade</th>
-                    <th>Título</th>
-                    <th>Ano de Início</th>
-                    <th>Ano de Fim</th>
+                    <th>Nome</th>
+                    <th>Partido</th>
+                    <th>Estado</th>
                   </tr>
                 </thead>
-                {ocupacoes.dados.map((ocupacao, i) => <tr>
-                  <td valign="top">{ocupacao.entidade}</td>
-                  <td valign="top">{ocupacao.titulo}</td>
-                  <td valign="top">{ocupacao.anoInicio}</td>
-                  <td valign="top">{ocupacao.anoFim}</td>
+                <tr>
+                  <td valign="top">{generic.nome}</td>
+                  <td valign="top">{generic.siglaPartido}</td>
+                  <td valign="top">{generic.siglaUf}</td>
                 </tr>
-                )}
+                
               </table>
             </div>
           </>
