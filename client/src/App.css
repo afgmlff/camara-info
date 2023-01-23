@@ -69,7 +69,8 @@ td{
 
 
 .content{
-    margin-top: 10px;
+    padding-left: 12vw;
+    padding-right: 12vw;
 }
 
 .center {
@@ -80,6 +81,7 @@ td{
 .consulta{
     display: flex;
     justify-content: center;
+    margin-top: 50px;
 }
 
 .centeredBlock{

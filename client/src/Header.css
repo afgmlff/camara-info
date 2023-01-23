@@ -15,17 +15,20 @@ main {
 }
 
 header {
-    background: #fafafa;
-    height: 60px;
+    background: #0095a8;
+    height: 140px;
     box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
     margin-bottom: 50px;
+    padding-left: 10vw;
+    position: relative;
 }
 
 h1{
-        font: normal 1.5em;
+        position: absolute;
         font-family: 'Roboto', sans-serif;
-        color: #324960;
-        margin-left: 10px;
-        padding-top: 10px;
+        color: #ffffff;
+        font-size: 42px;
+        bottom: 8%;
+        font-style: italic;
 }
 

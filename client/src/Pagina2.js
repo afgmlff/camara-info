@@ -92,8 +92,8 @@ function Pagina2() {
 
   return (
     <>
-        <h1>Página 2</h1>
-
+        <p className='subtitulo'>Informações gerais</p>
+        <p className='texto'>Selecione um deputado na busca acima para exibir informações.</p>
 
         <div className='consulta'>
         {(typeof dados.dados === 'undefined') ? ( //Apresenta uma mensagem durante o período de tentativas de fetch na API, pro caso do servidor possuir muitas requisições...
@@ -116,7 +116,7 @@ function Pagina2() {
       </div>
 
       <div className='resultadoConsulta'>
-        {(typeof generic.dados === 'undefined' || isLoading) ? ( //Apresenta uma mensagem durante o período de tentativas de fetch na API, pro caso do servidor possuir muitas requisições...
+        {(title === '' || isLoading) ? ( //Apresenta uma mensagem durante o período de tentativas de fetch na API, pro caso do servidor possuir muitas requisições...
           <></>
         ) : (
           <>
