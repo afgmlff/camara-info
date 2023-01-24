@@ -88,7 +88,7 @@ function Pagina2() {
       while (retryCount <= 3) {
         
           try {
-              const response = await axios.post('/geral', { id })
+              const response = await axios.get(`https://dadosabertos.camara.leg.br/api/v2/deputados/${id}`, { id })
               if (response.status === 500) {
                   retryCount++;
                   console.log(`Erro 500. Tentando conectar novamente...`)
