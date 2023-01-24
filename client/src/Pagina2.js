@@ -50,7 +50,7 @@ function Pagina2() {
    * Fetch para o backend, onde são requisitados os dados da API da câmara
    */
   useEffect(() => {
-    fetch("/data").then(
+    fetch("https://dadosabertos.camara.leg.br/api/v2/deputados").then(
       response => response.json()
     ).then(
       data => {
