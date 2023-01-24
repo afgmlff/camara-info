@@ -32,9 +32,20 @@ h1{
         font-style: italic;
 }
 
-@media (max-width: 1110px) {
+@media (max-width: 1636px) {
     h1{
         bottom: 23%;
+    }
+}
+
+@media (max-width: 712px) {
+    h1{
+        bottom: 38%;
+        font-size: 36px;
+    }
+
+    header{
+        height: 180px;
     }
 }
 
