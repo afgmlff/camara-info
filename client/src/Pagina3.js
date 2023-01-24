@@ -45,7 +45,7 @@ function Pagina3() {
    * Fetch para o backend, onde são requisitados os dados da API da câmara
    */
   useEffect(() => {
-    fetch("/uflist").then(
+    fetch("https://dadosabertos.camara.leg.br/api/v2/referencias/uf").then(
       response => response.json()
     ).then(
       data => {
