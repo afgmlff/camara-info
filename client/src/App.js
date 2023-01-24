@@ -5,6 +5,7 @@ import Header from './Header';
 import Pagina2 from './Pagina2';
 import Pagina3 from './Pagina3';
 import './Pagina2.css'
+import Footer from './Footer';
 
 import {BrowserRouter as Router, Route, Switch, Link} from 'react-router-dom' 
 
@@ -191,7 +192,7 @@ function App() {
           </Route>
         </Switch>            
 
-
+        <Footer />
       </div></Router>
       
       </>
