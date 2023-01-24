@@ -80,6 +80,3 @@ app.post('/ufsearch', (req, res) => {
 
 app.listen(5000, ()=> {console.log("Servidor rodando na porta 5000...")})
 
-
-
-module.exports = app;
