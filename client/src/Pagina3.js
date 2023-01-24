@@ -82,7 +82,7 @@ function Pagina3() {
       while (retryCount <= 3) {
         
           try {
-              const response = await axios.post('/ufsearch', { id })
+              const response = await axios.get(`https://dadosabertos.camara.leg.br/api/v2/deputados?siglaUf=${id}&ordem=ASC&ordenarPor=nome`, { id })
               if (response.status === 500) {
                   retryCount++;
                   console.log(`Erro 500. Tentando conectar novamente...`)
