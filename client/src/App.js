@@ -52,7 +52,7 @@ function App() {
    * Fetch para o backend, onde requisita-se a lista de deputados da API da câmara
    */
   useEffect(() => {
-    fetch("/data").then(
+    fetch("https://server-camara.vercel.app/data").then(
       response => response.json()
     ).then(
       data => {
